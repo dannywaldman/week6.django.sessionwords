@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Session Words</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/words.css' %}">
+    </head>    
+    <body>
+        <div id="wrapper">
+            <div id="left">
+                <h1>Add a new word</h1>
+                <form method="POST" action="/session_words/add_word">
+                    <input type-"text" name="word">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Choose color</legend>
+                        <label>
+                            <input type="radio" name="color" value="red" checked="checked">Red
+                        </label>
+                        <label>
+                             <input type="radio" name="color" value="green">Green
+                        </label>
+                        <label>
+                            <input type="radio" name="color" value="blue">Blue
+                        </label>
+                    </fieldset>
+                    <label>
+                        <input type="checkbox" name="big" value="big">show in BIG fonts!
+                    </label>
+                    <input type="submit" value="Add to session" class="add">
+                </form>
+            </div>
+            <div id="right">
+                {%  with request.session.logs as logs %}
+                    {% if logs %}
+                    <form class="right" method="POST" action="/session_words/clear">
+                        {% csrf_token %}
+                        <input type="submit" value="Clear Session" class="remove">
+                    </form>
+                        {% for log in logs %}
+                            <div>
+                                <p class="{{ log.color }} {{ log.big }}">{{ log.word }}</p>
+                                <p>- added on {{ log.datetime  }}</p>
+                            <div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+        </div>
+    </body>
+</html>
